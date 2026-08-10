@@ -4,19 +4,24 @@ public class CookieMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public LoggingMiddleware(RequestDelegate next)
+    public CookieMiddleware(RequestDelegate next)
     {
         _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, DbContext dbContext)
+    public async Task InvokeAsync(HttpContext httpContext, DbContext dbContext)
     {
         Console.WriteLine($"Incoming: {httpContext.Request.Method} {httpContext.Request.Path}");
         if (httpContext.Request.Path == "api/login")
         {
-            httpContext.Response.Cookie();
+            var requestBody = httpContext.ReadRequestBody<LoginRequest>();
+
         }
-        var sessionId = dbContext.Sessions.
+        else
+        {
+            var cookie = httpContext.Request.Cookies.FirstOrDefault(c => c.Key == "sessionId");
+        }
+        //var sessionId = dbContext.Sessions.
         await _next(httpContext);
         Console.WriteLine($"Outgoing: {httpContext.Response.StatusCode}");
     }
@@ -24,7 +29,7 @@ public class CookieMiddleware
 
 public static class CookieMiddlewareExtensions
 {
-    public static IApplicationBuilder UseRequestCulture(
+    public static IApplicationBuilder UseCookieSessions(
         this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<CookieMiddleware>();

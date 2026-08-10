@@ -1,13 +1,15 @@
 using dotenv.net;
 using EncryptedDbAtRest.Components;
 using EncryptedDbAtRest.Server;
-using Microsoft.AspNetCore.Mvc;
+using EncryptedDbAtRest.Server.Encryption;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 DotEnv.Load();
-Env.Init();
+Env.Initialize();
+Thread.Sleep(1000); // wait 1 second before attempting to initialize the algorithms
+SymmetricEncryption.Initialize();
 
 // Add services to the container.
 builder.Services.AddDbContext<EncryptedDbAtRest.Server.DbContext>(options =>
@@ -16,6 +18,7 @@ builder.Services.AddDbContext<EncryptedDbAtRest.Server.DbContext>(options =>
     });
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
@@ -33,11 +36,13 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
+app.UseTimeTracking();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+//app.UseCookieSessions();
 app.MapGet("api/get", (InstanceAccess.Get));
 app.MapGet("api/create", InstanceAccess.Create);
-app.MapGet("api/encr", InstanceAccess.TestDecrypt);
 
 app.Run();

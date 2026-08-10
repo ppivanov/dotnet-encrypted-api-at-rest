@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EncryptedDbAtRest.Server;
@@ -13,9 +12,14 @@ public class Customer : Instance
 
     [NotMapped]
     public string Address { get; private set; }
-    
+
     [NotMapped]
     public string ZipCode { get; private set; }
+
+    public Customer() : base(null)
+    {
+
+    }
 
     public Customer(Tenant tenant, string firstName, string lastName, string address, string zipCode) : base(tenant)
     {

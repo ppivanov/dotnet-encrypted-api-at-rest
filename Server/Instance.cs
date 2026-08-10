@@ -5,53 +5,32 @@ using System.Text.Json.Serialization;
 namespace EncryptedDbAtRest.Server;
 
 [JsonDerivedType(typeof(Customer))]
-[JsonDerivedType(typeof(TimeBlock))]
 public abstract class Instance
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     [Column(TypeName = "varchar(32)")]
-    public string Id { get; init; }
+    public string Id { get; private set; }
 
     [Required]
-    
+
     public string Data { get; private set; } = null!;
-    
-    [Required]
-    public DateTime Created { get; init; }
-    
-    [Required]
-    public required Tenant Tenant { get; init; }
 
-    internal string? Nonce { get; set; }
-    
-    public void SetData()
+    [Required]
+    public DateTime Created { get; private set; }
+
+    [Required]
+    public Tenant Tenant { get; private set; }
+
+    public void SetData(string data)
     {
-       Data = this.GetEncryptedData();
+        Data = data;
     }
 
     public Instance(Tenant tenant)
     {
-        Id= Guid.NewGuid().ToString().Replace("-", "");
+        Id = StringUtils.GetNewId();
         Created = DateTime.UtcNow;
         Tenant = tenant;
-    }
-}
-
-public static class InstanceExtensions
-{
-    private const string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$?_-";
-
-    public static string GetEncryptedData<T>(this T instance) where T : Instance
-    {
-        var nonce = "";
-        var rnd = new Random();
-        for (int i = 0; i < 16; i++)
-        {
-            nonce += AllowedChars[rnd.Next(0, AllowedChars.Length)];
-        }
-
-        instance.Nonce = nonce;
-        return JsonSerializer.Serialize(instance);
     }
 }

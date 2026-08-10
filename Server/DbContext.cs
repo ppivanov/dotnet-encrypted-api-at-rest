@@ -1,10 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace EncryptedDbAtRest.Server;
 
 public class DbContext : Microsoft.EntityFrameworkCore.DbContext
 {
+
     public DbSet<Customer> Customers { get; set; }
-    public DbSet<TimeBlock> TimeBlocks { get; set; }
     public DbSet<Session> Sessions { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Tenant> Tenants { get; set; }
 
     public DbContext(DbContextOptions<DbContext> options)
         : base(options)
@@ -19,7 +23,7 @@ public class DbContext : Microsoft.EntityFrameworkCore.DbContext
         {
             if (entry.Entity is Instance instance)
             {
-                instance.SetData();
+                instance.Serialize();
             }
         }
 

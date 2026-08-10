@@ -8,8 +8,19 @@ public class Tenant
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     [Column(TypeName = "varchar(32)")]
-    public string Id { get; init; }
+    public string Id { get; private set; } = null!;
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; private set; } = null!;
+
+    public Tenant()
+    {
+
+    }
+
+    public Tenant(string id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
 }
