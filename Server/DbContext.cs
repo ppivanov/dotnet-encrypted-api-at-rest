@@ -23,7 +23,7 @@ public class DbContext : Microsoft.EntityFrameworkCore.DbContext
         {
             if (entry.Entity is Instance instance)
             {
-                instance.Serialize();
+                instance.Tenant.PrepareInstance(instance);
             }
         }
 

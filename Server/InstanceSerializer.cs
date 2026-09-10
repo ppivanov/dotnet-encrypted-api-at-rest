@@ -16,11 +16,10 @@ public static class InstanceSerializer
     public static void Serialize<T>(this T instance) where T : Instance
     {
         var json = instance.SerializeToJson();
-        Console.WriteLine(json);
         instance.SetData(SymmetricEncryption.Instance.Encrypt(ref json));
     }
 
-    private static string SerializeToJson<T>(this T instance) where T : Instance
+    public static string SerializeToJson<T>(this T instance) where T : Instance
     {
         return JsonSerializer.Serialize(instance, DefaultOptions);
     }
@@ -31,9 +30,6 @@ public static class InstanceSerializer
         {
             throw new Exception("Attempt to deserialize null instance");
         }
-        //var json = JsonSerializer
-        //    .Deserialize<T>(instance.Data, DefaultOptions)
-        //    ?? throw new Exception("Failed to deserialize JSON");
 
         var encryptedData = instance.Data;
         var jsonData = SymmetricEncryption.Instance.Decrypt(ref encryptedData);

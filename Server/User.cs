@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EncryptedDbAtRest.Server;
 
@@ -18,4 +19,19 @@ public class User : Instance
     public User(Tenant tenant) : base(tenant)
     {
     }
+}
+
+public static class UserController
+{
+    public static User Register(HttpContext httpContext, DbContext dbContext, [FromRoute] string tenant, [FromBody] UserRequest request)
+    {
+
+    }
+}
+
+public class UserRequest
+{
+    public required string Username { get; set; }
+
+    public required string Password { get; set; }
 }

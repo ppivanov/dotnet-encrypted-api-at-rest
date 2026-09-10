@@ -53,13 +53,6 @@ public sealed class SymmetricEncryption
 
     public string Encrypt(ref string str)
     {
-
-        //var inBytes = Encoding.GetBytes(str);
-        //var xfrm = _aes.CreateEncryptor();
-        //var outBytes = xfrm.TransformFinalBlock(inBytes, 0, inBytes.Length);
-
-        //return Encoding.GetString(outBytes) ?? throw new Exception("Failed to encrypt data");
-
         // Create an encryptor to perform the stream transform.
         var encryptor = _aes.CreateEncryptor();
 
@@ -73,14 +66,8 @@ public sealed class SymmetricEncryption
         return Convert.ToBase64String(ms.ToArray());
     }
 
-    public string Decrypt(ref string cipherText)
+    private string Decrypt(ref string cipherText)
     {
-        //var inBytes = Encoding.GetBytes(cipherText);
-        //var xfrm = _aes.CreateDecryptor();
-        //var outBytes = xfrm.TransformFinalBlock(inBytes, 0, inBytes.Length);
-
-        //return Encoding.GetString(outBytes);
-
         var decryptor = _aes.CreateDecryptor();
 
         // Create the streams used for decryption.

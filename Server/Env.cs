@@ -5,9 +5,6 @@ namespace EncryptedDbAtRest.Server;
 
 public static class Env
 {
-    public static byte[]? EncryptionKey { get; private set; }
-
-    public static byte[]? EncryptionIV { get; private set; }
     public static string DbString => Vars[EnvironmentVariableNames.DB_CONNECTION_STRING];
 
     public static bool IsDevelopment => Vars[EnvironmentVariableNames.IS_DEVELOPMENT] == "true";
@@ -91,20 +88,7 @@ public static class Env
         {
             throw new Exception($"The environment variable for the given variable name is not set: [{variableName}]");
         }
-
-        switch (variableName)
-        {
-            case EnvironmentVariableNames.DATA_ENCRYPTION_KEY_PATH:
-                EncryptionKey = bytes;
-                File.WriteAllBytes(path, bytes);
-                break;
-            case EnvironmentVariableNames.DATA_ENCRYPTION_IV_PATH:
-                EncryptionIV = bytes;
-                File.WriteAllBytes(path, bytes);
-                break;
-            default:
-                break;
-        }
+        File.WriteAllBytes(path, bytes);
     }
 
     public static string DefaultEncryptionKeyPath => "encryption.key";
